@@ -1,0 +1,54 @@
+
+<a type="button" class="btn btn-primary" href="/sales3/add">Add data</a>
+<table class="table table-dark">
+  <thead>
+    <tr>
+      <th scope="col"><i class="fas fa-trash-alt"></i></th>
+      <th scope="col">Ajax delete</th>
+      <th scope="col">sid</th>  
+      <th scope="col">sales_id</th>
+      <th scope="col">name</th>
+      <th scope="col">birthday</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each sales}}
+    <tr>
+      <td><a href="javascript: remove_item({{sid}})"><i class="fas fa-trash-alt"></i></a></td>
+      <td><i class="fas fa-trash-alt my-del-icon" data-sid="{{sid}}"></i></td>
+      <td>{{sid}}</td>
+      <td>{{sales_id}}</td>
+      <td>{{name}}</td>
+      <td>{{birthday}}</td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
+
+<style>   
+  .my-del-icon {
+    color:red;
+    cursor:pointer;
+  }
+</style>
+
+<script>
+   function remove_item(sid){
+     if (confirm("Do You make sure to remove"+sid+"of Data ?"))
+     {
+       location.href='/sales3/remove/'+sid;
+     }
+   };
+ $('.my-del-icon').click ()=>{
+     var me = $(this);
+     var sid =me.attr('data-sid');
+     if (confirm("Do You make sure to remove"+sid+"of Data ?")){
+       $.get('/sales3/remove2'+sid, function(data) {
+         console.log(data);
+          me.closest('tr').remove();
+       },'json');   
+     }
+   }
+
+  
+</script>

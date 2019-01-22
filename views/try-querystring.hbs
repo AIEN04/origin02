@@ -1,0 +1,9 @@
+{{#each urlParts.myquery}}
+    
+    {{@key}}--{{lookup ../urlParts.myquery @key}}<br>
+{{/each}}
+
+<hr>
+{{urlParts.query.a}}<br>
+{{urlParts.query.b}}<br>
+{{urlParts.query.c}}<br>

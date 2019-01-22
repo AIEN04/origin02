@@ -1,0 +1,55 @@
+ || chd1="&#42" || chd1="&#64"
+
+切換微軟注音輸入法:
+
+Ctrl + Shift  -->  後按 Shift
+
+===============================================
+
+.tb1{
+        width:580px;
+        border: 5px solid #5555FF;
+        margin: auto;
+        margin-top: 50px;
+    }
+    tr{
+        display: block;
+        float:left;
+    }
+    th,td {
+        border: 3.5px solid#595959;
+        display: block;
+        }
+
+
+<table class="b1">
+            <script>
+                    for (let i = 2; i < 10; i++) {
+                            document.write(`<tr><br>`);
+                        for (let j = 1; j < 10; j++) {
+                            document.write(`<th>${i}*${j}=${i * j}<br>`);
+                        }
+                        
+                    };
+            </script>
+        
+    </table>
+
+
+
+=====================================================
+
+.tb1{
+        width:590px;
+        border: 5px solid #5555FF;
+        /* margin: auto; */
+        /* margin-top: 10px; */
+    }
+
+<img class="img2" src="images/dk1.jpg" alt="" title="">
+
+=======================================================
+< link rel="Shortcut Icon" type="image/x-icon" href="絕對位址/相對位址" />
+
+======================================================
+ <select name=”select1”>
