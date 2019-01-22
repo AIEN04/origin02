@@ -327,8 +327,94 @@ app.get('/sales3/remove/:sid',(req,res) => {
     (error,results,fields) => 
     { res.json({success:true,
     affectedRows:results.affectedRows})})
+    // (error, results, fields)=> {
+    //     res.redirect('/sales3');
+    // })
 });
 
+
+//-----------------------------------
+
+app.get('/sales3/remove2/:sid',(req,res) => {
+    db.query("Delete from sales where sid=?",
+    [req.params.sid],
+    (error,results,fields) => 
+    { res.json({
+        success:true,
+        affectedRows:results.affectedRows
+    })})
+});
+
+//-----------------Eidt page---------------------------------
+
+app.get('/sales3/edit/:sid',(req,res) => {
+    db.query("Select * from sales where sid=?",
+    [req.params.sid],
+    (error,results,fields) =>{
+        // console.log(results)
+        if(! results.length){
+            res.status(404);
+            res.send('No data!');
+        } else { 
+            results[0].birthday = moment(results[0].birthday).format('YYYY-MM-DD');
+            // console.log(results[0]);
+            res.render('sales3_edit', {
+                item: results[0]
+            });
+        }
+    });
+});
+
+//---------------Eidt page-----------------------
+app.post('/sales3/edit/:sid', (req, res)=>{
+        let my_result = {
+            success: false,
+            affectedRows: 0,
+            info: '每一欄皆為必填欄位'
+        };
+        const val = {
+            sales_id: req.body.sales_id,
+            name: req.body.name,
+            birthday: req.body.birthday,
+        };
+    
+        if(!req.body.sales_id || !req.body.name || !req.body.birthday){
+            res.json(my_result);
+            return;
+        }
+        db.query("SELECT 1 FROM `sales` WHERE `sales_id`=? AND sid<>?",
+            [req.body.sales_id, req.params.sid],
+            (error, results, fields)=> {
+                if(results.length){
+                    my_result['info'] = '員工編號重複';
+                    res.json(my_result);
+                    return;
+                }
+                const sql = "UPDATE `sales` SET ? WHERE sid=?";
+                db.query(sql,
+                    [val, req.params.sid],
+                    (error, results, fields)=>{
+                        console.log(results)
+                        if(error){
+                            // console.log(error);
+                            // res.send(error.sqlMessage);
+                            // return;
+                        }
+                        console.log(results)
+                        if(results.changedRows===1){
+                            my_result = {
+                                success: true,
+                                affectedRows: 1,
+                                info: '修改成功'
+                            };
+                            res.json(my_result);
+                        } else {
+                            my_result['info'] = '資料沒有變更';
+                            res.json(my_result);
+                        }
+                    });
+            });
+    });
 
 
 //-------------When you not found Page----------------

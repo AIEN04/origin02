@@ -1,0 +1,81 @@
+{{#if msg}}
+<div class="alert alert-{{msg.type}}" role="alert">
+    {{msg.info}}
+</div>
+{{/if}}
+
+
+<form method="POST">
+<div id="info" class="alert" style="display:none"></div>
+<form method="POST" name="form1" onsubmit="return checkForm();">
+    {{#with item}}
+    <input type="hidden" name="sid" value="{{sid}}">
+    <div class="col-lg-6">
+        <div class="form-group">
+            <label for="sales_id">Sales_id</label>
+            <input type="text" class="form-control"
+                 value="{{sales_id}}"
+                 name="sales_id" id="sales_id">
+        </div>
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" class="form-control"
+                value="{{name}}"               
+                 name="name" id="name">
+        </div>
+        <div class="form-group">
+            <label for="birthday">Birthday</label>
+            <input type="text" class="form-control"
+                value="{{birthday}}"
+                 name="birthday" id="birthday">
+        </div>
+        <button type="submit" class="btn btn-primary">Amend</button>
+    </div>
+    {{/with}}
+</form>
+</form>
+
+<script>
+    var info = $('#info');
+    var datePattern = /^\d{4}\-\d{1,2}\-\d{1,2}$/;
+
+    function checkForm(){
+        info.hide();
+        if(! form1.sales_id.value){
+            info.removeClass('alert-success');
+            info.addClass('alert-danger');
+            info.show();
+            info.html('請填員工編號');
+            return false;
+        }
+        if(form1.name.value.length < 2){
+            info.removeClass('alert-success');
+            info.addClass('alert-danger');
+            info.show();
+            info.html('請填正確的姓名');
+            return false;
+        }
+        if(! datePattern.test(form1.birthday.value)){
+            info.removeClass('alert-success');
+            info.addClass('alert-danger');
+            info.show();
+            info.html('請填正確的生日');
+            return false;
+        }
+        $.post('/sales3/edit/' + form1.sid.value, $(form1).serialize(), function(data){
+             if(data.success){
+                info.removeClass('alert-danger');
+                info.addClass('alert-success');
+                info.show();
+                info.html(data.info);
+            } else {
+                info.removeClass('alert-success');
+                info.addClass('alert-danger');
+                info.show();
+                info.html(data.info);
+            }
+        },'json');
+        return false;
+    }
+
+</script>
