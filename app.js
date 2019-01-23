@@ -55,7 +55,7 @@ app.set('view engine','hbs');
 //------------Using Session----------------------------------------
 app.use(session( { saveUninitialized:false, resave:false, secret:'abc@4536', 
     cookie:{
-        maxAge : 80000 // Living time 20sec
+        maxAge : 60*1000 // Logintime Living time 1min
     } } ) );
 
 app.get('/try-session',(req,res) => {
@@ -73,14 +73,8 @@ app.use((req, res, next)=>{
 });
 
 //------------home page ----------------- 
-app.get('/home',function (req,res) {res.render('home',{name:'Taiwanese!!'})});
+app.get('/home',function (req,res) {res.render('home',{name:'Taiwanese!!',loginUser: req.session.loginUser})});
 
-//----------------------------------------
-// app.get('/ss',function (req,res) {
-//     const sales = require('./data/sales.json');
-//     res.type('text/plain')
-//     res.send(JSON.stringify(sales))
-// } )
 
 //------------Router sales page--------------------
 app.get('/sales',function (req,res) {
@@ -97,10 +91,9 @@ app.get('/sales2',function (req,res) {
     res.render('sales2',{sales:sales,myclass:'abc'})
 } )
 
-//------------Router data01 page--------------------
-app.get('/data01',function (req,res) {
-    const data01 = require('./')
-    res.render()
+//------------Router login page--------------------
+app.get('/login',function (req,res) {
+    res.render('login.hbs',{login:"Welcome Guest"})
 } )
 
 
@@ -161,7 +154,7 @@ app.post('/try-upload',upload.single('avatar') ,(req,res) => {
 //-------------Fortune Cookies---------------------------
 app.get('/about', (req,res) => {
     var randomFortune = fortunes[Math.floor(Math.random()*fortunes.length)];
-    res.render('about',{fortune:randomFortune})   
+    res.render('about',{fortune:randomFortune, loginUser: req.session.loginUser})   
 });
 
 var fortunes = [ "Conquer your fears or they will conquer you.",
@@ -402,6 +395,7 @@ app.post('/sales3/edit/:sid', (req, res)=>{
                         }
                         console.log(results)
                         if(results.changedRows===1){
+             
                             my_result = {
                                 success: true,
                                 affectedRows: 1,
