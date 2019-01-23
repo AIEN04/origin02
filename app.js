@@ -53,9 +53,11 @@ app.engine('hbs',exphbs({
 app.set('view engine','hbs');
 
 //------------Using Session----------------------------------------
-app.use(session( { saveUninitialized:false, resave:false, secret:'abc@4536', 
+app.use(session( { saveUninitialized:false, 
+    resave:false, 
+    secret:'abc@4536', 
     cookie:{
-        maxAge : 60*1000 // Logintime Living time 1min
+        maxAge : 60*1000 // For Logintime  1min
     } } ) );
 
 app.get('/try-session',(req,res) => {
@@ -73,7 +75,9 @@ app.use((req, res, next)=>{
 });
 
 //------------home page ----------------- 
-app.get('/home',function (req,res) {res.render('home',{name:'Taiwanese!!',loginUser: req.session.loginUser})});
+app.get('/home',function (req,res) {res.render('home',
+    {name:'Taiwanese!!',
+    loginUser: req.session.loginUser})});
 
 
 //------------Router sales page--------------------
@@ -88,7 +92,10 @@ app.get('/sales',function (req,res) {
 //------------Router sales2 page--------------------
 app.get('/sales2',function (req,res) {
     const sales = require('./data/sales.json')
-    res.render('sales2',{sales:sales,myclass:'abc'})
+    res.render('sales2',
+    {sales:sales,
+    myclass:'abc',
+    loginUser: req.session.loginUser})
 } )
 
 //------------Router login page--------------------
@@ -124,7 +131,9 @@ app.get('/try-querystring', (req,res) => {
 //------------Router try-post-form page--------------------
 app.get('/try-post-form', (req,res) => { res.render('try-post-form')});
 
-app.post('/try-post-form', (req,res) => { res.render('try-post-form',{email:req.body.email,password:req.body.password})});
+app.post('/try-post-form', (req,res) => { res.render('try-post-form',
+    {email:req.body.email,
+    password:req.body.password})});
 
 //-------------Router JSON page--------------
 app.post('/try-post-form2', (req,res) => { res.json(req.body)});
@@ -154,9 +163,13 @@ app.post('/try-upload',upload.single('avatar') ,(req,res) => {
 //-------------Fortune Cookies---------------------------
 app.get('/about', (req,res) => {
     var randomFortune = fortunes[Math.floor(Math.random()*fortunes.length)];
-    res.render('about',{fortune:randomFortune, loginUser: req.session.loginUser})   
+    console.log(randomFortune);
+    res.render('about',
+    {fortune:randomFortune, 
+    loginUser: req.session.loginUser})   
 });
 
+//------------Fortune Cookies Sentences------
 var fortunes = [ "Conquer your fears or they will conquer you.",
                 "Rivers need springs.",
                 "Do not fear what you don't know.",
@@ -246,24 +259,21 @@ app.get( '/try-moment', (req,res) => {
 
 //------------------Test Mysql Sales3-----------------------------------
 app.get('/sales3',(req,res) => {
-  const sql="SELECT * FROM sales";
+  const sql="SELECT * FROM sales"; // Mysql Syntax
   db.query(sql,(error,results,fields) => {
        if (error) throw error;
-    //    
+        
         results.forEach( (ele) => {
            ele.birthday = moment(ele.birthday).format('YYYY-MM-DD'); 
         });
        res.render('sales3',{
            sales:results, 
            loginUser: req.session.loginUser
-       })
+       });
     //    console.log(results);
     //    res.send('OK, connected !!')
-
-  })  
-    }
-    );    
-
+    })  
+    });    
 
 //-----------------Router sales3 page------------------------
 
@@ -273,7 +283,7 @@ app.get('/sales3/add', (req,res) => {
 
 app.post('/sales3/add', (req,res) => { 
     const data =res.locals.renderData;
-    const sql="INSERT INTO sales SET ?";
+    const sql="INSERT INTO sales SET ? Order by DESCENDING"; // Mysql Syntax 
     const val = {
                 sales_id:req.body.sales_id,
                 name:req.body.name,
@@ -312,7 +322,7 @@ app.post('/sales3/add', (req,res) => {
     
     // res.send('ok');
 });
-//-------------------------------------
+//---------------Edit Sales3 Remove----------------------
 
 app.get('/sales3/remove/:sid',(req,res) => {
     db.query("Delete from sales where sid=?",
@@ -415,10 +425,10 @@ app.post('/sales3/edit/:sid', (req, res)=>{
 app.use( (req,res) => {
     res.type('text/html');
     res.status(404);
-    res.send(`<h2>Sorry</h2><img src='5.jpg'><h2>The page we can't found ....</h2>`);
+    res.send(`<h2>Sorry</h2><img src='404.png'><h2>The page we can't found ....</h2>`);
 } );
 
 //------------When you start Sever---------------------------
 app.listen(3000,function () {
-    console.log('Server Listen port 3000')
+    console.log('Server Start & Listen port 3000')
 });
